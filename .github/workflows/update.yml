@@ -12,7 +12,7 @@ on:
     inputs:
       push: 
         description: 'push'
-        default: true
+        default: false
         type: boolean
       eudev: 
         description: 'update eudev'
@@ -41,16 +41,13 @@ jobs:
           git config --global user.email "info@auxxxilium.tech"
           git config --global user.name "AuxXxilium"
           sudo timedatectl set-timezone "Europe/Berlin" 
-          
+        
       - name: Get EnvDeploy
         run: |
           ROOT_PATH=${{ github.workspace }}
 
           git clone https://github.com/SynologyOpenSource/pkgscripts-ng.git ${ROOT_PATH}/pkgscripts-ng
           cd ${ROOT_PATH}/pkgscripts-ng
-          # if version == 6.2, checkout 6.2.4
-          git checkout DSM${{ matrix.version }}`[ "${{ matrix.version }}" = "6.2" ] && echo ".4"`
-          sudo ./EnvDeploy -v ${{ matrix.version }}`[ "${{ matrix.version }}" = "6.2" ] && echo ".4"` -l  # Get Available platforms
           sudo ./EnvDeploy -q -v ${{ matrix.version }} -p ${{ matrix.platform }}
 
           #ENV
@@ -169,9 +166,9 @@ jobs:
 
       - name: Init Env
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          sudo timedatectl set-timezone "Europe/Berlin" 
+          git config --global user.email "info@auxxxilium.tech"
+          git config --global user.name "AuxXxilium"
+          sudo timedatectl set-timezone "Europe/Berlin"
 
       - name: download to artifacts
         uses: actions/download-artifact@v3

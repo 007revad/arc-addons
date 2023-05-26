@@ -11,8 +11,7 @@ if [ "${1}" = "late" ]; then
   cp -vf /usr/bin/grub-editenv /tmpRoot/usr/bin
 
   mount -t sysfs sysfs /sys
-  insmod /tmpRoot/usr/lib/modules/processor.ko
-  insmod /tmpRoot/usr/lib/modules/acpi-cpufreq.ko
+  modprobe acpi-cpufreq
   # CPU performance scaling
   if [ -f /tmpRoot/usr/lib/modules-load.d/70-cpufreq-kernel.conf ]; then
     CPUFREQ=`ls -ltr /sys/devices/system/cpu/cpufreq/* 2>/dev/null | wc -l`
@@ -50,20 +49,9 @@ if [ "${1}" = "late" ]; then
     fi
   fi
 
-  # Intel GPU
-  if [ -f /tmpRoot/usr/lib/modules-load.d/70-video-kernel.conf ]; then
-      INTELGPU=`cat /proc/bus/pci/devices | grep -i i915 | wc -l`
-      if [ $INTELGPU -eq 0 ]; then
-          echo "Intel GPU is not detected, disabling "
-          ${SED_PATH} -i 's/^i915/# i915/g' /tmpRoot/usr/lib/modules-load.d/70-video-kernel.conf
-      else
-          echo "Intel GPU is detected, nothing to do"
-      fi
-  fi
-
   # Nvidia GPU
   if [ -f /tmpRoot/usr/lib/modules-load.d/70-syno-nvidia-gpu.conf ]; then
-    NVIDIADEV=`cat /proc/bus/pci/devices | grep -i 10de | wc -l`
+    NVIDIADEV=$(cat /proc/bus/pci/devices | grep -i 10de | wc -l)
     if [ ${NVIDIADEV} -eq 0 ]; then
         echo "NVIDIA GPU is not detected, disabling "
         ${SED_PATH} -i 's/^nvidia/# nvidia/g' /tmpRoot/usr/lib/modules-load.d/70-syno-nvidia-gpu.conf
