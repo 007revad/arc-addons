@@ -3,7 +3,8 @@
 if [ "${1}" = "modules" ]; then
   echo "Starting eudev daemon"
   [ -e /proc/sys/kernel/hotplug ] && printf '\000\000\000\000' > /proc/sys/kernel/hotplug
-  chmod 755 /usr/sbin/udevd /usr/bin/kmod /usr/bin/udevadm /lib/udev/*
+  chmod 755 /usr/sbin/udevd /usr/bin/kmod /usr/bin/udevadm /usr/lib/udev/*
+  /usr/sbin/depmod -a
   /usr/sbin/udevd -d || { echo "FAIL"; exit 1; }
   echo "Triggering add events to udev"
   udevadm trigger --type=subsystems --action=add
@@ -15,6 +16,12 @@ if [ "${1}" = "modules" ]; then
   # Remove from memory to not conflict with RAID mount scripts
   /bin/killall udevd
 elif [ "${1}" = "late" ]; then
+  echo "Starting eudev daemon - late"
+  #copy modules
+  cp -rf /usr/lib/modules/* /tmpRoot/usr/lib/modules/
+  cp -rf /usr/lib/firmware/* /tmpRoot/usr/lib/firmware/
+  /usr/sbin/depmod -a -b /tmpRoot/
+  
   # Copy rules
   cp -vf /etc/udev/rules.d/* /tmpRoot/lib/udev/rules.d/
   DEST="/tmpRoot/lib/systemd/system/udevrules.service"

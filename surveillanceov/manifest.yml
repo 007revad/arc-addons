@@ -1,0 +1,9 @@
+version: 1
+name: surveillanceov
+description: "58 License for Surveillance Station 9.1.1-10728 Openvino"
+all:
+  install-script: "install.sh"
+  copy: "all"
+available-for:
+  denverton-4.4.180:
+  denverton-4.4.302:
