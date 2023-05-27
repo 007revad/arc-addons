@@ -3,7 +3,7 @@
 /usr/syno/bin/synopkg stop SurveillanceStation
 sleep 10
 
-PATH1="/var/packages/SurveillanceStation/target/lib/"
+PATH1="/var/packages/SurveillanceStation/target/lib"
 PATH2="/var/packages/SurveillanceStation/target/scripts"
 SPATCH="/usr/lib"
 
